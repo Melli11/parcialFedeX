@@ -11,10 +11,10 @@ correrTests :: IO ()
 correrTests = hspec $ do
   describe "Cargos" $ do
     it "Cargo Categorico: Si la categoria coincide se aplica un cargo de %50 sobre el precio base" $ do
-      precioBase (cargoCategorico "Consola" 50 envioX ) `shouldBe` 500
+      precioBase (cargoCategorico "Consola" 50 envioARG ) `shouldBe` 500
     it "Cargo por Sobrepedo: Si el peso es menor a un peso X no afecto el precio " $ do
-      precioBase (cargoPorSobrePeso 11 envioX) `shouldBe` 1000
+      precioBase (cargoPorSobrePeso 11 envioARG) `shouldBe` 1000
     it "Cargo por Sobrepedo: Si el peso es MAYOR a un peso X modifico el precio  " $ do
-      precioBase (cargoPorSobrePeso 9 envioX) `shouldBe` 1080
+      precioBase (cargoPorSobrePeso 9 envioARG) `shouldBe` 1080
     it "Cargo arbitrario: Agrego $50 al precio del envio " $ do
-      precioBase (cargoArbitrario envioX) `shouldBe` 1050
+      precioBase (cargoArbitrario envioARG) `shouldBe` 1050
