@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use camelCase" #-}
+{-# HLINT ignore "Use section" #-}
 module Library where
 import PdePreludat
 import GHC.Num (Num)
@@ -163,21 +164,21 @@ elEnvioEsLocal envioX = paisOrigen envioX == paisDestino envioX
 --     impuestos :: [Impuesto]
 --     } deriving (Show,Eq)
 
--- filtrarPorCategorias :: [Categoria] -> [Envio] -> [Envio]
--- filtrarPorCategorias categorias envios = filter . filter (tieneLaCategoriaX ) envios
+
 -- tieneLaCategoriaX :: Categoria -> Envio -> Bool
 -- tieneLaCategoriaX categoriaX   = elem categoriaX . categorias
 
+buscarUnaCategoriaEnUnaListaDeEnvios :: Categoria -> [Envio] -> Bool
+buscarUnaCategoriaEnUnaListaDeEnvios categoriaX  = any (tieneLaCategoriaX categoriaX )
 
-
+buscarEnUnaListaDeCategoriasEnUnaListaDeEnvios :: [Categoria] -> [Envio] -> [Categoria]
+buscarEnUnaListaDeCategoriasEnUnaListaDeEnvios listaDeCategorias listaDeEnvios = filter (flip buscarUnaCategoriaEnUnaListaDeEnvios listaDeEnvios) listaDeCategorias
 
 conjuntoDeEnvios :: [Envio]
 conjuntoDeEnvios = [envioARG,envioEEUU,envioPaisesBajos]
 
 categoriasBusqueda :: [Categoria]
 categoriasBusqueda = ["musica","tecnologia","ropa"]
-
-
 
 
 -- 6.Obtener el precio total de un envío, en base a los impuestos que tiene asignado y a un 
@@ -196,28 +197,24 @@ categoriasBusqueda = ["musica","tecnologia","ropa"]
 
 -- -- tipo de un cargo
 -- type Cargo =  Envio -> Envio
+
+-- precioTotal :: Envio -> [Cargo] -> Number
+
+-- precioTotal envio cargos = envioConImpuestosAplicados + envioConCargosAplicados
+
 -- type Impuesto = Envio -> Number
 
--- precioTotal :: Envio -> [Cargo] -> Number
--- precioTotal :: Envio -> [Cargo] -> Number
+aplicarImpuesto:: Envio -> Impuesto -> Number
+aplicarImpuesto envio impuesto = impuesto envio
+-- map :: (a -> b) -> [a] -> [b]
+-- foldl (b -> a -> b) -> b -> [a] -> b
 
--- precioTotal envio cargos = precioBaseDelEnvioConImpuestosAplicados + precioBaseDelEnvioConCargosAplicados
 
-precioBaseDelEnvioConImpuestosAplicados :: Envio -> Number
-precioBaseDelEnvioConImpuestosAplicados envio = sum.aplicarUnImpuesto 
-
--- aplicarImpuestosQueTieneElEnvio :: Envio 
-
-aplicarUnImpuesto :: Envio -> Impuesto -> Number
-aplicarUnImpuesto  envio impuesto = impuesto envio 
-
-precioBaseDelEnvioConCargosAplicados ::  Envio -> [Cargo] -> Number
-precioBaseDelEnvioConCargosAplicados envio  =  precioBase . aplicarConjuntoDeCargosAUnEnvio envio
+envioConCargosAplicados ::  Envio -> [Cargo] -> Number
+envioConCargosAplicados envio  =  precioBase . aplicarConjuntoDeCargosAUnEnvio envio
 
 aplicarConjuntoDeCargosAUnEnvio ::  Envio -> [Cargo] -> Envio
 aplicarConjuntoDeCargosAUnEnvio = foldl aplicarUnCargo
-
-
 
 aplicarUnCargo :: Envio -> Cargo -> Envio
 aplicarUnCargo  envio cargo = cargo envio
